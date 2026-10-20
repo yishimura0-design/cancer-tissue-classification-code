@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+#PBS -N cancer_fullframe_3cnn_v1
+#PBS -W group_list=x-ccast-prj-tida
+#PBS -l select=1:ncpus=8:mem=48gb:ngpus=1
+#PBS -l walltime=48:00:00
+#PBS -j oe
+set -euo pipefail
+ROOT=${CANCER_ROOT:-$CANCER_DATA_ROOT}
+CAMPAIGN="$ROOT/cancer_fullframe_3cnn_v1"
+: "${PBS_ARRAY_INDEX:=${FF_JOB_INDEX:-}}"
+[[ "$PBS_ARRAY_INDEX" =~ ^[0-9]+$ ]] || { echo 'Missing PBS_ARRAY_INDEX or FF_JOB_INDEX' >&2; exit 2; }
+ROW=$(sed -n "${PBS_ARRAY_INDEX}p" "$CAMPAIGN/jobs.tsv")
+[[ -n "$ROW" ]] || { echo 'Out-of-range job index' >&2; exit 2; }
+IFS=$'\t' read -r KIND EXP SCENARIO MODEL FOLD <<< "$ROW"
+[[ "$FOLD" =~ ^[1-5]$ ]]
+[[ "$MODEL" =~ ^(resnet18|efficientnet_b0|mobilenet_v3_large)$ ]]
+source "$HOME/envs/ml39/bin/activate"
+python - <<'PY'
+import torch
+assert torch.cuda.is_available(), 'Expected CCast GPU'
+print('GPU:',torch.cuda.get_device_name(0),flush=True)
+PY
+if [[ "$KIND" == core ]]; then
+  if [[ "$EXP" == B0 ]]; then
+    ROLES="$ROOT/cancer_advanced_core_cv/splits/inner_outer_roles.csv"
+  elif [[ "$EXP" == A1 && ( "$FOLD" == 2 || "$FOLD" == 4 ) ]]; then
+    ROLES="$ROOT/cancer_advanced_core_cv/splits_variant_a1/inner_outer_roles.csv"
+  else
+    echo 'Invalid Core split' >&2; exit 2
+  fi
+  test -s "$ROLES"
+  python "$CAMPAIGN/generated/core/run_one_core_cnn_fold_resumable.py" \
+    --manifest "$ROOT/qc_outputs_clean/manifest_accepted.csv" \
+    --roles "$ROLES" --experiment-id "$EXP" \
+    --scenario "$SCENARIO" --model "$MODEL" --fold "$FOLD" \
+    --out "$CAMPAIGN/results/core/$EXP" \
+    --epochs 50 --patience 8 --freeze-epochs 3 --batch-size 16 \
+    --workers 8 --amp --save-checkpoint
+elif [[ "$KIND" == angle && "$EXP" == ANGLE ]]; then
+  python "$CAMPAIGN/generated/angle/angle_cnn_heldout_cv.py" run \
+    --manifest "$ROOT/cancer_angle_professional_pipeline/results_angle_cpu/manifest_clean.csv" \
+    --out "$CAMPAIGN/results/angle" --model "$MODEL" --fold "$FOLD" \
+    --batch-size 16 --num-workers 8 --max-epochs 50 \
+    --head-epochs 8 --early-stop-patience 8 --min-epochs 12
+else
+  echo "Invalid task row: $ROW" >&2; exit 2
+fi

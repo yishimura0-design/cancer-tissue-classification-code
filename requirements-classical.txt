@@ -1,0 +1,14 @@
+# Recorded classical-ML research environment (July 2026; Python 3.9.21).
+# GPU-only PyTorch dependencies are NOT necessary for these experiments.
+numpy==1.26.4
+pandas==2.2.2
+scikit-learn==1.6.1
+scipy==1.13.1
+scikit-image==0.24.0
+Pillow==11.3.0
+lightgbm==4.6.0
+joblib==1.5.2
+tifffile==2024.8.30
+imageio==2.37.2
+matplotlib==3.9.4
+tqdm==4.67.1

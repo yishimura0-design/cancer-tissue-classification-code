@@ -40,3 +40,9 @@ __pycache__/
 .pytest_cache/
 .venv/
 venv/
+
+# Never stage per-sample CSV/TSV manifests, results or role assignments
+*.csv
+*.tsv
+!examples/*_template.csv
+

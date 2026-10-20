@@ -50,3 +50,15 @@ The publication version, authorship, code license and final DOI/tag must be appr
 ## Code availability for the manuscript
 
 Use the draft in [CODE_AVAILABILITY.md](CODE_AVAILABILITY.md). Replace the pending-release statement with the public DOI/tag only when the release is approved and publicly accessible.
+
+## Start here for a paper or thesis defense
+
+- [Experiment-to-code map and explanations](docs/PAPER_EXPERIMENT_MAP.md)
+- [Reproducibility test evidence](docs/REPRODUCIBILITY_QA.md)
+- [Recorded scientific software versions](docs/ENVIRONMENT.md)
+- [Original code provenance and portability changes](docs/SOURCE_PROVENANCE.md)
+- [Classical ML pinned dependencies](requirements-classical.txt)
+- [CNN dependency guidance](requirements-cnn.txt)
+
+Run source-only tests: `python -m unittest discover -s tests -v`. No image downloads are required for these packaging tests.
+

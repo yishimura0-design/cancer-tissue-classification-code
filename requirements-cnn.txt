@@ -1,0 +1,12 @@
+# Reference versions observed in the shared 2026 CCast research environment.
+# CUDA-specific torch builds must be installed using official compatible
+# wheels for the execution machine and verified separately.
+numpy==1.26.4
+pandas==2.2.2
+scikit-learn==1.6.1
+scipy==1.13.1
+Pillow==11.3.0
+torch==2.8.0
+torchvision==0.23.0
+tifffile==2024.8.30
+joblib==1.5.2

@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+#PBS -N cancer_png_cache
+#PBS -q default
+#PBS -W group_list=x-ccast-prj-tida
+#PBS -l select=1:ncpus=16:mem=64gb
+#PBS -l walltime=24:00:00
+#PBS -j oe
+set -euo pipefail
+ROOT=$CANCER_DATA_ROOT
+RUN="$ROOT/cancer_fullframe_cached_v1"
+source "$HOME/envs/ml39/bin/activate"
+
+# One CPU-only, restartable cache build across all Core and Angle images.
+python "$RUN/prepare_shared_cache.py" --root "$ROOT" --campaign "$RUN" --workers 16
+# Freeze the deterministic Angle group splits in the new result directory only.
+if [[ ! -e "$RUN/results/angle/role_assignments.csv" ]]; then
+    python "$RUN/generated/angle/angle_cnn_heldout_cv.py" prepare \
+      --manifest "$RUN/cache/manifests/angle.csv" \
+      --out "$RUN/results/angle"
+fi
+python - <<'PY'
+from pathlib import Path
+import pandas as pd
+root=Path('$CANCER_DATA_ROOT')
+a=pd.read_csv(root/'cancer_fullframe_cached_v1/results/angle/role_assignments.csv')
+b=pd.read_csv(root/'cancer_angle_deep_learning_pipeline/results_dl/heldout_5fold_v2/role_assignments.csv')
+assert a.equals(b), 'Frozen Angle roles changed: prohibit GPU launch'
+print('FROZEN_ANGLE_SPLIT_PASS',a.shape,flush=True)
+PY
+python "$RUN/prepare_shared_cache.py" --root "$ROOT" --campaign "$RUN" --verify-only
+python "$RUN/preflight_fullframe_cached.py" --root "$ROOT"
+printf "CACHE_AND_PREFLIGHT_PASS\n" > "$RUN/CACHE_AND_PREFLIGHT_PASS"
+echo 'CACHE_AND_PREFLIGHT_PASS: PBS GPU array may start'
