@@ -1,0 +1,82 @@
+{
+  "search_spaces": [
+    {
+      "name": "S01_raw_gray_64",
+      "kind": "raw_gray",
+      "resize": [64, 64],
+      "stride": 1,
+      "grayscale": true
+    },
+    {
+      "name": "S02_raw_gray_96",
+      "kind": "raw_gray",
+      "resize": [96, 96],
+      "stride": 1,
+      "grayscale": true
+    },
+    {
+      "name": "S03_raw_gray_128_stride2",
+      "kind": "raw_gray",
+      "resize": [128, 128],
+      "stride": 2,
+      "grayscale": true
+    },
+    {
+      "name": "S04_raw_rgb_64",
+      "kind": "raw_rgb",
+      "resize": [64, 64],
+      "stride": 1,
+      "grayscale": false
+    },
+    {
+      "name": "S05_gray_hist_64bins",
+      "kind": "hist",
+      "resize": [128, 128],
+      "hist_bins": 64,
+      "grayscale": true
+    },
+    {
+      "name": "S06_stats_hist_128",
+      "kind": "stats_hist",
+      "resize": [128, 128],
+      "hist_bins": 64,
+      "grayscale": true
+    },
+    {
+      "name": "S07_lbp_texture_128",
+      "kind": "lbp",
+      "resize": [128, 128],
+      "lbp_points": 8,
+      "lbp_radius": 1,
+      "grayscale": true
+    },
+    {
+      "name": "S08_hog_shape_128",
+      "kind": "hog",
+      "resize": [128, 128],
+      "hog_pixels_per_cell": 16,
+      "hog_cells_per_block": 2,
+      "grayscale": true
+    },
+    {
+      "name": "S09_combined_small_128",
+      "kind": "combined_small",
+      "resize": [128, 128],
+      "hist_bins": 64,
+      "lbp_points": 8,
+      "lbp_radius": 1,
+      "grayscale": true
+    },
+    {
+      "name": "S10_combined_hog_128",
+      "kind": "combined_hog",
+      "resize": [128, 128],
+      "hist_bins": 64,
+      "lbp_points": 8,
+      "lbp_radius": 1,
+      "hog_pixels_per_cell": 16,
+      "hog_cells_per_block": 2,
+      "grayscale": true
+    }
+  ]
+}
