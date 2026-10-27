@@ -89,16 +89,16 @@ def main():
                 'angle cache loader')
         apply(angle, angle_patch)
         for src, dst in [
-            ('fullframe_padding/pbs_prepare_cached.pbs', 'pbs_prepare_cached.pbs'),
-            ('fullframe_padding/pbs_train_cached.pbs', 'pbs_train_cached.pbs'),
-            ('fullframe_padding/submit_cached_campaign.sh','submit_cached_campaign.sh'),
-            ('fullframe_padding/prepare_shared_cache.py','prepare_shared_cache.py'),
-            ('fullframe_padding/summarize_fullframe_repeat.py','summarize_fullframe_repeat.py'),
+            ('experiment1_tissue/sensitivity_fullframe/pbs_prepare_cached.pbs', 'pbs_prepare_cached.pbs'),
+            ('experiment1_tissue/sensitivity_fullframe/pbs_train_cached.pbs', 'pbs_train_cached.pbs'),
+            ('experiment1_tissue/sensitivity_fullframe/submit_cached_campaign.sh','submit_cached_campaign.sh'),
+            ('experiment1_tissue/sensitivity_fullframe/prepare_shared_cache.py','prepare_shared_cache.py'),
+            ('experiment1_tissue/sensitivity_fullframe/summarize_fullframe_repeat.py','summarize_fullframe_repeat.py'),
         ]:
             shutil.copyfile(root/src, out/dst)
         # The original preflight checks roles, local pretrained weights and 57 jobs.
         # Adapt only its new campaign directory, never the historical experiment.
-        preflight = (root/'fullframe_padding/preflight_fullframe_repeat.py').read_text()
+        preflight = (root/'experiment1_tissue/sensitivity_fullframe/preflight_fullframe_repeat.py').read_text()
         preflight = replace_exact(preflight, "campaign=root/'cancer_fullframe_3cnn_v1'",
                                   "campaign=root/'cancer_fullframe_cached_v1'", 'preflight campaign')
         (out/'preflight_fullframe_cached.py').write_text(preflight)

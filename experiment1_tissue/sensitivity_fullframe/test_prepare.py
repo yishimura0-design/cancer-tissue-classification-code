@@ -11,14 +11,14 @@ from prepare_fullframe_repeat import (build,CORE_TRANSFORMS,CORE_MODELS,ANGLE_TR
 
 def mock_source():
     root=Path(tempfile.mkdtemp(prefix='src_full_'))
-    (root/'angle_cnn').mkdir()
-    (root/'core_cnn_b0_a1').mkdir()
+    (root/'experiment2_angle_sweep_cells/angle_cnn').mkdir(parents=True)
+    (root/'experiment1_tissue/core_cnn_b0_a1').mkdir(parents=True)
     for file in ('cnn_checkpoint_state.py','core_eval.py','run_contract.py'):
-        (root/'core_cnn_b0_a1'/file).write_text('value = 3\n')
-    (root/'core_cnn_b0_a1/dl_grouped_common.py').write_text('def make_transforms(train, image_size=224):\n    return None\n\ndef build_model(name,n_classes,pretrained=True):\n    return None\n')
-    (root/'core_cnn_b0_a1/run_one_core_cnn_fold_resumable.py').write_text("choices=['resnet18','efficientnet_b0','mobilenet_v3_large']\n")
-    (root/'angle_cnn/dl_common.py').write_text('def train_transform(sz=224):\n    return None\n\ndef eval_transform(sz=224):\n    return None\n\ndef build_model(name,num_classes=3,dropout=.3,pretrained=True):\n    return None\n\ndef split_parameter_groups(model,name):\n    return None\n')
-    (root/'angle_cnn/angle_cnn_heldout_cv.py').write_text("MODELS = ('resnet18', 'efficientnet_b0', 'mobilenet_v3_large')\n")
+        (root/'experiment1_tissue/core_cnn_b0_a1'/file).write_text('value = 3\n')
+    (root/'experiment1_tissue/core_cnn_b0_a1/dl_grouped_common.py').write_text('def make_transforms(train, image_size=224):\n    return None\n\ndef build_model(name,n_classes,pretrained=True):\n    return None\n')
+    (root/'experiment1_tissue/core_cnn_b0_a1/run_one_core_cnn_fold_resumable.py').write_text("choices=['resnet18','efficientnet_b0','mobilenet_v3_large']\n")
+    (root/'experiment2_angle_sweep_cells/angle_cnn/dl_common.py').write_text('def train_transform(sz=224):\n    return None\n\ndef eval_transform(sz=224):\n    return None\n\ndef build_model(name,num_classes=3,dropout=.3,pretrained=True):\n    return None\n\ndef split_parameter_groups(model,name):\n    return None\n')
+    (root/'experiment2_angle_sweep_cells/angle_cnn/angle_cnn_heldout_cv.py').write_text("MODELS = ('resnet18', 'efficientnet_b0', 'mobilenet_v3_large')\n")
     return root
 
 

@@ -1,1 +1,4 @@
-path,label,group_key
+image_id,path,label,filename,stem,extension,parent_dir,group_key
+f33d38de6fd3c66265f8,/PATH/TO/ANGLE_IMAGES/HPNE/HPNE_10_20x_ang0.tif,HPNE,HPNE_10_20x_ang0.tif,HPNE_10_20x_ang0,.tif,/PATH/TO/ANGLE_IMAGES/HPNE,a1d5699b2e7f27a63839
+15c39d69e439dccbf0e3,/PATH/TO/ANGLE_IMAGES/HPNE/HPNE_10_20x_ang5.tif,HPNE,HPNE_10_20x_ang5.tif,HPNE_10_20x_ang5,.tif,/PATH/TO/ANGLE_IMAGES/HPNE,a1d5699b2e7f27a63839
+2acf25941669206a6de5,/PATH/TO/ANGLE_IMAGES/MIA/MIA_3_20x_ang0.tif,MIA,MIA_3_20x_ang0.tif,MIA_3_20x_ang0,.tif,/PATH/TO/ANGLE_IMAGES/MIA,b6e3e80319c31d2d93f2

@@ -9,16 +9,16 @@ Use `angle_cnn_heldout_cv.py` and `dl_common.py`, not the historical Stage 1 CNN
 The manifest CSV must identify image path, class label and subgroup key. Accepted labels: `HPNE`, `PANC`, `MIA`.
 
 ```bash
-python angle_cnn/angle_cnn_heldout_cv.py prepare \
+python experiment2_angle_sweep_cells/angle_cnn/angle_cnn_heldout_cv.py prepare \
   --manifest /PRIVATE/angle_manifest_clean.csv \
   --out /PRIVATE_RESULTS/angle_cnn
 
-python angle_cnn/angle_cnn_heldout_cv.py run \
+python experiment2_angle_sweep_cells/angle_cnn/angle_cnn_heldout_cv.py run \
   --manifest /PRIVATE/angle_manifest_clean.csv \
   --out /PRIVATE_RESULTS/angle_cnn \
   --model efficientnet_b0 --fold 1
 
-python angle_cnn/angle_cnn_heldout_cv.py summarize \
+python experiment2_angle_sweep_cells/angle_cnn/angle_cnn_heldout_cv.py summarize \
   --manifest /PRIVATE/angle_manifest_clean.csv \
   --out /PRIVATE_RESULTS/angle_cnn
 ```

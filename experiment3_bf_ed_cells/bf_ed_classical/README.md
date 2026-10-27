@@ -26,7 +26,7 @@ Filenames above are **schematic examples**, not distributed source images. The s
 Set `CANCER_DATA_ROOT` in your shell. For each stride `8`, `16`, `32`, run:
 
 ```bash
-python bf_ed_classical/bfed_rawpix_3fold_cv_testsize.py \
+python experiment3_bf_ed_cells/bf_ed_classical/bfed_rawpix_3fold_cv_testsize.py \
   --cv 5 --cv-type group --eval-mode kfold --seed 42 \
   --stride 16 --ed-norm none \
   --modes BFplusED,BF,ED \
@@ -36,6 +36,6 @@ python bf_ed_classical/bfed_rawpix_3fold_cv_testsize.py \
 
 `BFplusED` means `np.concatenate([BF_raw_pixel_features, ED_raw_pixel_features], axis=1)`. It does **not** produce one merged image. Retained comparison: 3 input modes × 3 strides × 6 classifiers = 54 configurations; all evaluated with grouped five-fold CV. Report **all models**, not only the winner.
 
-**One-fold repeat check:** LightGBM / BF+ED / stride 16 / Fold 4: accuracy 0.625 exactly matched historical; macro-F1 0.621078 vs 0.626984 historical. Group-key overlap zero. See `../docs/REPRODUCIBILITY_QA.md`.
+**One-fold repeat check:** LightGBM / BF+ED / stride 16 / Fold 4: accuracy 0.625 exactly matched historical; macro-F1 0.621078 vs 0.626984 historical. Group-key overlap zero.
 
 **Limitations:** A filename-derived group ID is not proof of independent biological replication. Re-run only with authorized data. The output folder may contain per-pair identifiers—keep it private.

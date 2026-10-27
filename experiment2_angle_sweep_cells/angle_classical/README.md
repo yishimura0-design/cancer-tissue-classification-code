@@ -7,16 +7,16 @@
 The original `00_clean_make_manifest.py` was made portable: no private dataset locations are hard-coded. Pass directories that actually contain authorized TIFFs. Do not publish the generated manifest.
 
 ```bash
-python angle_classical/00_clean_make_manifest.py \
+python experiment2_angle_sweep_cells/angle_classical/00_clean_make_manifest.py \
   --input-dirs /PATH/TO/PRIVATE/ANGLE_IMAGES \
   --out /PATH/OUTSIDE/GIT/angle_qc
 
-python angle_classical/01_build_feature_cache.py \
+python experiment2_angle_sweep_cells/angle_classical/01_build_feature_cache.py \
   --manifest /PATH/OUTSIDE/GIT/angle_qc/manifest_clean.csv \
-  --search-spaces angle_classical/search_spaces.json \
+  --search-spaces experiment2_angle_sweep_cells/angle_classical/search_spaces.json \
   --out /PATH/OUTSIDE/GIT/angle_features
 
-python angle_classical/02_stage1_select_searchspace_5fold.py \
+python experiment2_angle_sweep_cells/angle_classical/02_stage1_select_searchspace_5fold.py \
   --features-dir /PATH/OUTSIDE/GIT/angle_features \
   --models ExtraTrees,RandomForest,LinearSVC,SGD_LogLoss,DecisionTree,LightGBM \
   --n-splits 5 --seed 42 \
