@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 """Clean cancer-tissue classical ML search with group-aware five-fold CV.
 
-This is the canonical paper script. It intentionally does not perform a 70/30
-holdout or fit a final deployment model. It performs internal validation only:
+This is an exploratory core-grouped feature/model search script. It does not
+perform a 70/30 holdout or fit a final deployment model. It performs internal validation only:
 
 - Scenario 1: Normal vs Malignant
 - Scenario 2: Stage IB/IIA/IIB/III/IV/Normal
