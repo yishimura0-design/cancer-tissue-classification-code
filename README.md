@@ -1,6 +1,6 @@
-# Cancer Tissue Classification — Coauthor Reproduction Guide
+# Pancreatic Tissue and Cell-Line Classification — Code and Reproduction Guide
 
-**Status: public code-review snapshot, not a finalized or approved research-software release.** The repository is currently visible on GitHub. It contains implementation source and documentation, **not the microscopy datasets**. Coauthors should confirm methods, input grouping, split definitions, actual run settings, and numerical results before handing code/results to the manuscript author. Code availability does not imply permission to publish the protected images.
+This repository provides research code and reproduction instructions for three experiments involving pancreatic tissue and cell-line microscopy. The original microscopy datasets are **not included**. This is a public code-review snapshot, pending final coauthor and data-custodian approval for a formal release.
 
 ## Data availability
 
@@ -47,7 +47,7 @@ Use a terminal at the repository root on a machine with permitted access to the 
 ```bash
 export TISSUE_ROOT="/AUTHORIZED_PRIVATE/TISSUE_SOURCE"
 export ANGLE_INPUT_DIR="/AUTHORIZED_PRIVATE/ANGLE_TIFFS"
-export BFED_ROOT="/AUTHORIZED_PRIVATE/ROOT_CONTAINING_cancer_combine_new"
+export CANCER_DATA_ROOT="/AUTHORIZED_PRIVATE/ROOT_CONTAINING_cancer_combine_new"
 export RESULTS_ROOT="/AUTHORIZED_PRIVATE_OUTPUT/cancer_results"
 mkdir -p "$RESULTS_ROOT"
 ```
