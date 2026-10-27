@@ -42,3 +42,8 @@ Original July 2026 execution records were located, independently of the newer Fo
 - Sanitized copies of the original stdout/stderr and PBS scripts were placed in the separately shared **private** `Cancer_Classical_Original_5Fold_Execution_Logs_Coauthor.zip`; original five-fold metrics are in `Cancer_Classical_Original_5Fold_Results.zip`. Neither ZIP is hosted in this repository.
 
 A fresh clone of `main` was also checked with the four built-in source-only tests and `compileall`, and both data-free full-frame generators again produced 57 jobs. See [Implementation review](IMPLEMENTATION_REVIEW.md) and [Coauthor runbook](COAUTHOR_RUNBOOK.md). This remains **partial implementation verification**, not a fresh complete five-fold CPU/GPU rerun on real images.
+
+
+### BF/ED grouped-CV fallback correction
+
+In the 2026-10-27 public code review, an unsafe fallback was found: missing `StratifiedGroupKFold` previously caused `--cv-type group` to use ungrouped `StratifiedKFold`. The code now **fails closed** instead of risking group leakage. This affects only unsupported/older scikit-learn environments; it does not alter the verified original CCAST 5-fold results obtained with scikit-learn 1.6.1. No full numeric reproduction is implied.

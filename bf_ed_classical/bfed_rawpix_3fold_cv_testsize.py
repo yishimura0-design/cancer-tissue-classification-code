@@ -775,11 +775,13 @@ def make_cv_splits(
 
     if cv_type == "group":
         if StratifiedGroupKFold is None:
-            print("[WARN] StratifiedGroupKFold not available. Falling back to StratifiedKFold.")
-        else:
-            groups = np.asarray([group_key_from_pair_key(k) for k in keys], dtype=object)
-            splitter = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=seed)
-            return [(tr, te) for tr, te in splitter.split(np.zeros_like(y), y, groups=groups)]
+            raise RuntimeError(
+                "--cv-type group requires StratifiedGroupKFold (scikit-learn >= 1.1). "
+                "Refusing ungrouped StratifiedKFold fallback to prevent train/test group leakage."
+            )
+        groups = np.asarray([group_key_from_pair_key(k) for k in keys], dtype=object)
+        splitter = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=seed)
+        return [(tr, te) for tr, te in splitter.split(np.zeros_like(y), y, groups=groups)]
 
     splitter = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=seed)
     return [(tr, te) for tr, te in splitter.split(np.zeros_like(y), y)]

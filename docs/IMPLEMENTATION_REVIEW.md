@@ -49,3 +49,10 @@ This is a **scoped verification report**, not a certification of end-to-end scie
 ## Code review outcome
 
 The source files compile and core packaging checks pass; original execution evidence supports the written **five-fold Classical** protocol. The checks do **not** establish that every executable branch is error-free, nor do they replace a real-data complete run. Any numerical, biological, or author-facing claim should be checked against the private original results and fixed dataset/split versions.
+
+
+## Safety correction to BF/ED code (2026-10-27)
+
+During review, we found that when `StratifiedGroupKFold` was unavailable, `make_cv_splits(..., cv_type="group", eval_mode="kfold")` fell back to ungrouped `StratifiedKFold`. That is unsafe for grouped data because it can split repeated pair keys across train/test. **Fixed:** the public source now raises a clear `RuntimeError` instead of silently switching split types. The historical environment was scikit-learn 1.6.1, where `StratifiedGroupKFold` exists; this fix does **not** change the historical five-fold protocol or saved results. Full real-data reruns remain unperformed.
+
+The original broader model search also includes more exploratory classifiers than the six selected for manuscript figures. The reviewed runbook explicitly uses the six-model subset and `--cv 5` to prevent accidental use of the three-fold script default.

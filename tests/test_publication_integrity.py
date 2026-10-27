@@ -42,6 +42,12 @@ class PublicationIntegrityTests(unittest.TestCase):
                 self.assertNotIn("/mmfs1/projects/", text, p)
                 self.assertNotIn("-----BEGIN OPENSSH PRIVATE KEY-----", text, p)
 
+    def test_bfed_grouped_cv_fails_closed_without_stratified_group_kfold(self):
+        # Dependency-free regression guard: grouping must never silently downgrade.
+        source = (ROOT / "bf_ed_classical" / "bfed_rawpix_3fold_cv_testsize.py").read_text(encoding="utf-8")
+        self.assertIn("Refusing ungrouped StratifiedKFold fallback", source)
+        self.assertNotIn("Falling back to StratifiedKFold.", source)
+
     def test_config_schemas_are_documented(self):
         with (ROOT / "examples" / "angle_manifest_template.csv").open(newline="") as f:
             h = next(csv.reader(f))
