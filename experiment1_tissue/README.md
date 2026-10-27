@@ -26,7 +26,7 @@ All 360 images of a core share the core's label and always stay together.
 
 * The 45 cores are divided into **5 folds of 9 cores**, spread as evenly as possible by stage (rarest stages placed first, fixed seed 42).
 * The model is trained **5 times**. Each time, one fold is the **test set** (9 cores); of the remaining 36 cores, **7 are a validation set** used only to decide when to stop training, and **29 are the training set**.
-* Every core is tested **exactly once**, by a model that never saw it. A new model is trained from scratch in every round.
+* Every core is tested **exactly once** by a model that did not use it for training or checkpoint selection. For CNNs, each fold starts with ImageNet-pretrained backbone weights and a newly initialized classification head, then is fine-tuned independently; trained weights are not transferred between folds.
 * Stage III and IV cores are never placed in validation (too few), so all of them remain available for training.
 * A core's prediction is the average over its 72 angles, then over its 5 fields of view.
 * **B0** is the primary fold assignment. **A1** is a sensitivity variant in which one Stage III core and one Stage IIA core swap test folds (folds 2 and 4 only); it uses the same specimens.
