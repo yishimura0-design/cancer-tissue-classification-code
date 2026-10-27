@@ -113,23 +113,23 @@ def build(repo: Path, dest: Path, overwrite: bool=False):
     core=generated/'core'; angle=generated/'angle'
     records=[]
     for name in ['cnn_checkpoint_state.py','core_eval.py','run_contract.py']:
-        records.append(copy_and_edit(repo/'core_cnn_b0_a1'/name,core/name))
+        records.append(copy_and_edit(repo/'experiment1_tissue/core_cnn_b0_a1'/name,core/name))
     def edit_core_common(s):
         s=replace_function(s,'make_transforms',CORE_TRANSFORMS)
         return replace_function(s,'build_model',CORE_MODELS)
-    records.append(copy_and_edit(repo/'core_cnn_b0_a1'/'dl_grouped_common.py',core/'dl_grouped_common.py',edit_core_common))
+    records.append(copy_and_edit(repo/'experiment1_tissue/core_cnn_b0_a1'/'dl_grouped_common.py',core/'dl_grouped_common.py',edit_core_common))
     old="choices=['resnet18','efficientnet_b0','mobilenet_v3_large']"
     models_str='choices='+repr(list(MODELS))
-    records.append(copy_and_edit(repo/'core_cnn_b0_a1'/'run_one_core_cnn_fold_resumable.py',core/'run_one_core_cnn_fold_resumable.py',
+    records.append(copy_and_edit(repo/'experiment1_tissue/core_cnn_b0_a1'/'run_one_core_cnn_fold_resumable.py',core/'run_one_core_cnn_fold_resumable.py',
                                  lambda s:replace_exact(s,old,models_str,'core runner')))
     def edit_angle_common(s):
         for name,body in [('train_transform',ANGLE_TRAIN),('eval_transform',ANGLE_EVAL),
                           ('build_model',ANGLE_MODELS),('split_parameter_groups',ANGLE_SPLIT)]:
             s=replace_function(s,name,body)
         return s
-    records.append(copy_and_edit(repo/'angle_cnn/dl_common.py',angle/'dl_common.py',edit_angle_common))
+    records.append(copy_and_edit(repo/'experiment2_angle_sweep_cells/angle_cnn/dl_common.py',angle/'dl_common.py',edit_angle_common))
     original="MODELS = ('resnet18', 'efficientnet_b0', 'mobilenet_v3_large')"
-    records.append(copy_and_edit(repo/'angle_cnn/angle_cnn_heldout_cv.py',angle/'angle_cnn_heldout_cv.py',
+    records.append(copy_and_edit(repo/'experiment2_angle_sweep_cells/angle_cnn/angle_cnn_heldout_cv.py',angle/'angle_cnn_heldout_cv.py',
                                  lambda s:replace_exact(s,original,'MODELS = '+repr(MODELS),'angle runner')))
     jobrows=[]
     for experiment,folds in [('B0',(1,2,3,4,5)),('A1',(2,4))]:
@@ -152,7 +152,7 @@ def build(repo: Path, dest: Path, overwrite: bool=False):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser()
-    p.add_argument('--repo',type=Path,default=Path(__file__).resolve().parents[1])
+    p.add_argument('--repo',type=Path,default=Path(__file__).resolve().parents[2])
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--overwrite-sources',action='store_true')
     a=p.parse_args()

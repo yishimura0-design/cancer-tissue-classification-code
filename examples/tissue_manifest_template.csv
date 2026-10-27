@@ -1,1 +1,4 @@
-filepath,relative_path,sample_id_from_folder,subgroup_id,scenario1_label,scenario2_label
+filepath,relative_path,filename,suffix,is_tif,top_group_dir,sample_id_from_folder,filename_sample_tokens,structure_note,scenario1_label,scenario2_label,subgroup_id,angle_value,qc_status,qc_reason,quarantined_to
+/PATH/TO/TISSUE_IMAGES/A/A2/A2_1_20x_ang0.tif,A/A2/A2_1_20x_ang0.tif,A2_1_20x_ang0.tif,.tif,1,A,A2,A2,ok,Malignant,Stage IB,A/A2/A2_1_20x,0,accepted_tif,valid_angular_image_and_folder_filename_match,
+/PATH/TO/TISSUE_IMAGES/A/A2/A2_1_20x_ang5.tif,A/A2/A2_1_20x_ang5.tif,A2_1_20x_ang5.tif,.tif,1,A,A2,A2,ok,Malignant,Stage IB,A/A2/A2_1_20x,5,accepted_tif,valid_angular_image_and_folder_filename_match,
+/PATH/TO/TISSUE_IMAGES/F/F1/F1_3_20x_ang0.tif,F/F1/F1_3_20x_ang0.tif,F1_3_20x_ang0.tif,.tif,1,F,F1,F1,ok,Normal,Normal,F/F1/F1_3_20x,0,accepted_tif,valid_angular_image_and_folder_filename_match,

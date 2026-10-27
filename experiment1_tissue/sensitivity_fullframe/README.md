@@ -16,10 +16,10 @@ This is an additional image preprocessing comparison, not a new independent coho
 From repository root, use output directories outside the repo:
 
 ```bash
-python fullframe_padding/prepare_fullframe_repeat.py \
+python experiment1_tissue/sensitivity_fullframe/prepare_fullframe_repeat.py \
   --repo . --output /tmp/fullframe_source_validation
 
-python fullframe_padding/build_cached_campaign.py \
+python experiment1_tissue/sensitivity_fullframe/build_cached_campaign.py \
   --repo . --output /tmp/fullframe_cache_validation
 ```
 
