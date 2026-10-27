@@ -31,7 +31,7 @@ Manifests must preserve `filepath`, `relative_path`, `sample_id_from_folder`, `s
 
 ## Core-level classical ML and results reporting (B0/A1)
 
-These three source scripts complement the Core CNN runner and have been retained from the original [cancer](https://github.com/yishimura0-design/cancer) study:
+These three source scripts complement the Core CNN runner and were retained from the original private research repository:
 
 - `03_train_cancer_searchspace_core_cv.py`: exploratory, core-grouped five-fold feature/model sweep. Requires `--core-fold-map` produced by `make_core_splits.py`. Selecting configurations by the outer-fold result is exploratory and **must not** be presented as unbiased held-out model selection.
 - `run_classical_inner_selected.py`: the B0/A1 Core Classical ML evaluation, choosing features/classifiers using inner validation only. It imports `03_train_cancer_searchspace_core_cv.py`, `core_eval.py`, and `run_contract.py` from this same folder.
