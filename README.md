@@ -1,64 +1,53 @@
-# Cancer Tissue Classification — Publication Code
+# Cancer Tissue Classification — Coauthor Reproduction Guide
 
-**Research software accompanying an experimental microscopy classification manuscript.**
+**Status: public code-review snapshot, not a finalized or approved research-software release.** The repository is currently visible on GitHub. It contains implementation source and documentation, **not the microscopy datasets**. Coauthors should confirm methods, input grouping, split definitions, actual run settings, and numerical results before handing code/results to the manuscript author. Code availability does not imply permission to publish the protected images.
 
-> **Release status: PREPARATION / PRIVATE.** This repository contains source code and documentation only. It does **not** contain the underlying microscopy images, feature caches, individual-sample manifests, model checkpoints, or credentials. The source archive is being reconciled with the paper's final tables. Do not cite this repository as a finalized public release yet.
+**First read:** [Experiment-by-experiment input paths and exact commands](docs/COAUTHOR_RUNBOOK.md) · [Implementation checks and open items](docs/IMPLEMENTATION_REVIEW.md) · [Experiment-to-paper map](docs/PAPER_EXPERIMENT_MAP.md).
 
-## Find the code for each experiment
+## Experiments and implemented source
 
-| Paper experiment | Directory | Input | Evaluation unit |
+| Paper experiment | Code directory / primary entrypoint | Required private input | Evaluation |
 | --- | --- | --- | --- |
-| Tissue classical ML (Scenario 1 / Scenario 2) | [tissue_classical/](tissue_classical/) | Tissue microscopy images | 225 tissue subgroups; grouped 5-fold CV |
-| BF / ED / BF+ED classical ML | [bf_ed_classical/](bf_ed_classical/) | Matched bright-field and ED images | 123 paired IDs; grouped 5-fold CV |
-| Angle Sweep classical ML | [angle_classical/](angle_classical/) | 939 angular images | 37 subgroups; grouped 5-fold CV |
-| Core CNN B0 / A1 | [core_cnn_b0_a1/](core_cnn_b0_a1/) | 16,200 images across 45 biological cores | 45 independent cores; outer 5-fold CV |
-| Angle Sweep CNN | [angle_cnn/](angle_cnn/) | 939 angular images | 37 subgroups; nested train/validation and independent outer 5-fold CV |
-| Full-frame padding sensitivity repeat | [fullframe_padding/](fullframe_padding/) | Same source images as Core / Angle CNN | Same held-out biological grouping, full-frame letterbox resize |
+| Tissue Classical ML | [`tissue_classical/`](tissue_classical/) — `01_qc_make_manifest.py`, `03_train_cancer_searchspace_grouped.py` | Authorized tissue image root (16,200 accepted images after QC) | 225 FOV/tissue subgroups, grouped five-fold CV; binary and six-class tasks |
+| Core CNN B0/A1 + Core Classical | [`core_cnn_b0_a1/`](core_cnn_b0_a1/) — `make_core_splits.py`, `run_one_core_cnn_fold_resumable.py`, `run_classical_inner_selected.py` | Tissue QC manifest, core role tables, 16,200 authorized images | 45 physical cores, five outer folds; A1 retrains changed folds 2/4 |
+| Angle Classical ML | [`angle_classical/`](angle_classical/) — `00_clean_make_manifest.py`, `01_build_feature_cache.py`, `02_stage1_select_searchspace_5fold.py` | Authorized angle TIFF folders | 939 images / 37 filename-derived subgroups, grouped five-fold CV |
+| Angle CNN | [`angle_cnn/`](angle_cnn/) — `angle_cnn_heldout_cv.py` | Same authorized angle manifest | 3 CNNs × 5 outer held-out subgroup folds |
+| BF / ED / BF+ED Classical ML | [`bf_ed_classical/`](bf_ed_classical/) — `bfed_rawpix_3fold_cv_testsize.py` | Paired BF and ED TIFF folders, 123 matched pairs | `--cv 5 --cv-type group --eval-mode kfold`; 3 modes × 3 strides × 6 manuscript classifiers |
+| Full-frame letterbox CNN repeat | [`fullframe_padding/`](fullframe_padding/) — `prepare_fullframe_repeat.py`, `build_cached_campaign.py` | Authorized original Core/Angle images and frozen fold roles | Same fold structure, 57 jobs (30 B0 + 12 A1 + 15 Angle) |
 
-Do not conflate **45 biological cores** (new Core CNN experiment) with **225 tissue subgroups/FOVs** (historical tissue classical ML experiment). Neither constitutes patient-independent external validation.
+**Important:** BF+ED is **concatenated raw-pixel feature vectors**, not a merged image or dual-branch CNN. The filename `bfed_rawpix_3fold_cv_testsize.py` predates the published five-fold configuration; **running the script without `--cv 5` uses its three-fold default and does not reproduce the paper**.
 
-## Data availability and permissions
+The historical **Tissue Classical** grouping (225 FOV/tissue subgroups) is distinct from the **Core CNN/Core Classical** grouping (45 physical cores). Neither should be called patient-independent validation.
 
-**No dataset is released here.** Images are controlled by their owners, not the repository maintainer. Do not add TIFF, PNG, JPG, raw datasets, per-image filenames, image-level predictions, protected sample metadata, cached features, or model checkpoints to Git.
+## Running code: start here
 
-A person authorized to use the original dataset must provide the images **locally** and configure their own paths. A synthetic test fixture, if present, validates software behavior and does not reproduce the reported biological results.
+Use a terminal at the repository root on a machine with permitted access to the source data. These are **input roles**, not public download locations:
 
-See [DATA_AVAILABILITY.md](DATA_AVAILABILITY.md) for the publication statement.
+```bash
+export TISSUE_ROOT="/AUTHORIZED_PRIVATE/TISSUE_SOURCE"
+export ANGLE_INPUT_DIR="/AUTHORIZED_PRIVATE/ANGLE_TIFFS"
+export BFED_ROOT="/AUTHORIZED_PRIVATE/ROOT_CONTAINING_cancer_combine_new"
+export RESULTS_ROOT="/AUTHORIZED_PRIVATE_OUTPUT/cancer_results"
+mkdir -p "$RESULTS_ROOT"
+```
 
-## Reproducibility and evaluation
+Follow [`docs/COAUTHOR_RUNBOOK.md`](docs/COAUTHOR_RUNBOOK.md) for complete, copyable per-experiment commands, all five folds and associated results, an input/output path table, and caveats about which auxiliary pipelines still require the original private folder layout. **Never put data, cache files, original execution logs, or predictions inside the Git working tree.**
 
-* Three target classes for BF/ED and Angle: `HPNE`, `PANC`, `MIA`.
-* Binary Core task: Normal vs Malignant. Six-class Core task: Normal, Stage IB, IIA, IIB, III, IV.
-* Train/validation/test isolation is at the **specified grouping unit**. A filename-derived ID cannot independently establish biological independence.
-* Report model-by-model **all five folds** and group-level metrics. Imaging views are correlated, so frame-level performance is secondary.
-* The original classical ML code uses **no validation-driven checkpoint early stopping**. Classical CV scores were used to compare candidate models; a separate external cohort is not claimed.
-* **Verified targeted one-fold repeat (2026-10-20):** Angle classical ExtraTrees + S09, Fold 4: image accuracy 0.4966887417, subgroup accuracy 0.6923076923, subgroup macro-F1 0.6363636364 (all exactly matched historical). BF+ED LightGBM, stride 16, Fold 4: accuracy 0.625 (exact), macro-F1 0.621078 vs historical 0.626984 (delta 0.005906). Both reported zero train/test grouping-key overlap. This is a **smoke check, not full five-fold reproducibility or proof of biological independence**.
-* Full-frame padded CNN repeat had 57 completed model/fold jobs. It is an exploratory preprocessing sensitivity check, not a new independent cohort.
+## Original results versus newer verification
 
-## How to reproduce without public data
+- **Original Angle Classical:** the retained July 2026 results contain **120 configurations × 5 folds = 600 fold rows** (10 feature spaces × 12 exploratory models). The paper focuses on six classifiers (60 configurations, 300 fold rows).
+- **Original BF/ED Classical:** the retained July 2026 PBS job script explicitly uses `--cv 5 --cv-type group --eval-mode kfold --seed 42`. All **54 paper configurations × 5 folds = 270 fold rows** are present across strides 8, 16 and 32.
+- **2026-10-20 targeted reproducibility QA:** one selected **Fold 4** per Classical experiment, compared against the original Fold 4. These are **not** five-fold reruns. See [QA documentation](docs/REPRODUCIBILITY_QA.md).
+- **CNN training records:** the private coauthor review ZIP contains 114 CNN per-fold epoch histories: Core B0 30, Core A1 12, Angle 15 and full-frame repeat 57. The private ZIP is separate from this code repository.
 
-1. Obtain permission from the actual image/data owner and prepare local source images.
-2. Use experiment-specific manifests and configuration described in each subfolder. Any paths in old HPC scripts are **examples**, not a publicly accessible dataset.
-3. Create the Python environment, check pinned/runtime versions in the experiment README and environment notes, and run syntax/group split/metric tests before training.
-4. Run a single fold first and confirm it reproduces the retained paper metrics; only then consider a full run.
-5. Save outputs **outside this git repository**. Never commit samples, image names, identifying metadata, fitted estimators, or intermediate feature arrays.
+## Cross-check status
 
-## Citation and licensing
+- Source-only tests and Python compilation passed on the cloned review snapshot, and the data-free full-frame generators produced the expected 57 job definitions.
+- Original Classical five-fold records and PBS scripts were cross-checked against the documented protocols.
+- **Not yet verified:** full five-fold model-by-model numerical reproduction from this reorganized repository with the protected dataset, all GPU training runs, environmental parity, and independent biological/patient grouping claims. See [`docs/IMPLEMENTATION_REVIEW.md`](docs/IMPLEMENTATION_REVIEW.md).
 
-The publication version, authorship, code license and final DOI/tag must be approved before making the repository public. No blanket open-source license is granted while permissions are under review. Please cite the paper and fixed release/commit after approval.
+## Permissions, safety, and release status
 
-## Code availability for the manuscript
+The original microscopy TIFFs, private manifest rows/identifiers, feature caches, per-image predictions, model weights, and unsanitized PBS logs are deliberately excluded. Access to protected inputs and coauthor ZIPs must be arranged privately with the data custodian. See [DATA_AVAILABILITY.md](DATA_AVAILABILITY.md), [CODE_AVAILABILITY.md](CODE_AVAILABILITY.md), [software environment](docs/ENVIRONMENT.md) and [source provenance](docs/SOURCE_PROVENANCE.md).
 
-Use the draft in [CODE_AVAILABILITY.md](CODE_AVAILABILITY.md). Replace the pending-release statement with the public DOI/tag only when the release is approved and publicly accessible.
-
-## Start here for a paper or thesis defense
-
-- [Experiment-to-code map and explanations](docs/PAPER_EXPERIMENT_MAP.md)
-- [Reproducibility test evidence](docs/REPRODUCIBILITY_QA.md)
-- [Recorded scientific software versions](docs/ENVIRONMENT.md)
-- [Original code provenance and portability changes](docs/SOURCE_PROVENANCE.md)
-- [Classical ML pinned dependencies](requirements-classical.txt)
-- [CNN dependency guidance](requirements-cnn.txt)
-
-Run source-only tests: `python -m unittest discover -s tests -v`. No image downloads are required for these packaging tests.
-
+The repository is **currently public**, but the publication version, authorship, license, release tag and permitted content still need coauthor/custodian approval. Do not describe it as an approved final research release or claim clinical validation.

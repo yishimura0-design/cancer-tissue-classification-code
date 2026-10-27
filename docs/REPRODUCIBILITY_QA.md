@@ -32,3 +32,13 @@ Both reports explicitly showed `PASS` and `train_test_group_overlap = 0`. The sm
 5. Tag an immutable release, optionally archive through Zenodo, and update Code Availability wording to refer to that fixed version.
 
 **A passed fold smoke test does not establish statistical unbiasedness, clinical validity, or patient-level independence.**
+
+## Additional evidence recovered on CCAST (2026-10-27)
+
+Original July 2026 execution records were located, independently of the newer Fold 4 verification:
+
+- **Angle Classical:** `angle_stage1_cv.o713717` is the original completed five-fold search stdout. Original `fold_results.csv` has 600 rows across 120 exploratory configurations, all five folds present. Six manuscript classifiers correspond to 300 rows.
+- **BF/ED Classical:** `bfed_5fold_stride.pbs` explicitly invokes `--cv 5 --eval-mode kfold --cv-type group --seed 42` for strides 8/16/32; each saved stride `meta.json` confirms it. All 270 fold rows for 54 manuscript configurations exist. Original `bfed_5fold_stride.o724194.0/.1/.2` end with `[DONE] Raw-pixel classification evaluation complete.`
+- Sanitized copies of the original stdout/stderr and PBS scripts were placed in the separately shared **private** `Cancer_Classical_Original_5Fold_Execution_Logs_Coauthor.zip`; original five-fold metrics are in `Cancer_Classical_Original_5Fold_Results.zip`. Neither ZIP is hosted in this repository.
+
+A fresh clone of `main` was also checked with the four built-in source-only tests and `compileall`, and both data-free full-frame generators again produced 57 jobs. See [Implementation review](IMPLEMENTATION_REVIEW.md) and [Coauthor runbook](COAUTHOR_RUNBOOK.md). This remains **partial implementation verification**, not a fresh complete five-fold CPU/GPU rerun on real images.
