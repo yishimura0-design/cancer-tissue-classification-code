@@ -9,7 +9,8 @@ This is an additional image preprocessing comparison, not a new independent coho
 * `build_cached_campaign.py`: generates 57-job cached version of Core B0/A1 + Angle Sweep CNN with same grouping and result contracts.
 * `preflight_fullframe_repeat.py`: checks data/roles and network-independent readiness on the actual compute environment.
 * `summarize_fullframe_repeat.py`: joins/validates result artifacts.
-* `pbs_* / submit_cached_campaign.sh`: **CCast-specific templates**, not a portable local GPU submission guarantee.
+* `pbs_prepare_cached.pbs`, `pbs_train_cached.pbs`, and `submit_cached_campaign.sh`: **CCast-specific templates** for the cached campaign, not portable local GPU submission scripts.
+* `pbs_fullframe_repeat.pbs`: an earlier non-cached campaign template retained for reference, not the entry point for the cached campaign.
 
 ## Data-free code-generator check
 
