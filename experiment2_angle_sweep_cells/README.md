@@ -22,7 +22,7 @@ A **subgroup** is the set of images in the same folder with the same file name a
 
 * The 37 subgroups are divided into **5 folds**, balanced by cell line (seed 42).
 * In each of the 5 rounds, one fold is the **test set**; of the remaining subgroups, **20% are a validation set** used only to decide when to stop training, and the rest are the **training set**.
-* Every subgroup is tested **exactly once**, by a model trained from scratch without it.
+* Every subgroup is tested **exactly once** by a CNN that did not use that subgroup for training or checkpoint selection. Each fold starts with ImageNet-pretrained backbone weights and a newly initialized classification head, then is fine-tuned independently.
 * A subgroup's prediction is the average of its images' class probabilities. Results are reported at both the subgroup and the image level.
 
 **Classical machine learning (the "previously evaluated" reference models)**
